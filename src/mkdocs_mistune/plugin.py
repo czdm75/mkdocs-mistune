@@ -1,23 +1,5 @@
-from typing import Dict, Tuple
-
-import mistune
-from mistune.directives import Admonition, FencedDirective
 from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
-
-MISTUNE_PLUGINS = [
-    # inline plugins
-    "strikethrough",
-    "url",
-    "abbr",
-    "superscript",
-    "subscript",
-    # block plugins
-    "task_lists",
-    "footnotes",
-    "table",
-    FencedDirective([Admonition()]),
-]
 
 
 class MistunePlugin(BasePlugin):
@@ -57,12 +39,3 @@ class MistunePlugin(BasePlugin):
         # take from page.file, check frontmatter and render
         page.file
         return
-
-
-class MistuneParser:
-    def __init__(self, plugins=None):
-        self.renderer = mistune.HTMLRenderer(escape=False)
-        self.plugins = MISTUNE_PLUGINS.copy() if plugins is None else plugins
-        self.markdown = mistune.create_markdown(
-            renderer=self.renderer, plugins=self.plugins
-        )
