@@ -964,6 +964,9 @@ dependencies = [
 typst = [
     { name = "typst" },
 ]
+yaml = [
+    { name = "pyyaml" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -980,9 +983,10 @@ test = [
 requires-dist = [
     { name = "mistune", specifier = ">=3.0" },
     { name = "mkdocs", specifier = ">=1.5" },
+    { name = "pyyaml", marker = "extra == 'yaml'", specifier = ">=6.0" },
     { name = "typst", marker = "extra == 'typst'", specifier = ">=0.14" },
 ]
-provides-extras = ["typst"]
+provides-extras = ["typst", "yaml"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "jupyter", specifier = ">=1.1.1" }]

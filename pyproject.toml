@@ -37,3 +37,7 @@ test = [
 
 [project.entry-points."mkdocs.plugins"]
 custom-renderer = "mkdocs_custom_renderer.plugin:CustomRendererPlugin"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
