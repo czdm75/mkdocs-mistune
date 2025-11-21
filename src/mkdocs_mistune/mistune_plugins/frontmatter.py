@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Match, Optional
 try:
     import yaml
 except ImportError:
-    yaml = None  # type: ignore
+    yaml = None
 
 if TYPE_CHECKING:
     from mistune.block_parser import BlockParser
@@ -79,6 +79,3 @@ def frontmatter(md: "Markdown") -> None:
     md.block.register(
         "block_json_frontmatter", JSON_FRONTMATTER_PATTERN, parse_block_json_frontmatter, before="fenced_code"
     )
-
-    if md.renderer and md.renderer.NAME == "html":
-        md.renderer.register("frontmatter", render_block_frontmatter)

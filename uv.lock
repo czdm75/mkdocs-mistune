@@ -961,6 +961,10 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+all = [
+    { name = "pyyaml" },
+    { name = "typst" },
+]
 typst = [
     { name = "typst" },
 ]
@@ -971,11 +975,14 @@ yaml = [
 [package.dev-dependencies]
 dev = [
     { name = "jupyter" },
+    { name = "mkdocs-mistune", extra = ["all"] },
 ]
 lint = [
+    { name = "mkdocs-mistune", extra = ["all"] },
     { name = "ruff" },
 ]
 test = [
+    { name = "mkdocs-mistune", extra = ["all"] },
     { name = "pytest" },
 ]
 
@@ -983,15 +990,26 @@ test = [
 requires-dist = [
     { name = "mistune", specifier = ">=3.0" },
     { name = "mkdocs", specifier = ">=1.5" },
+    { name = "pyyaml", marker = "extra == 'all'", specifier = ">=6.0" },
     { name = "pyyaml", marker = "extra == 'yaml'", specifier = ">=6.0" },
+    { name = "typst", marker = "extra == 'all'", specifier = ">=0.14" },
     { name = "typst", marker = "extra == 'typst'", specifier = ">=0.14" },
 ]
-provides-extras = ["typst", "yaml"]
+provides-extras = ["typst", "yaml", "all"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "jupyter", specifier = ">=1.1.1" }]
-lint = [{ name = "ruff" }]
-test = [{ name = "pytest" }]
+dev = [
+    { name = "jupyter", specifier = ">=1.1.1" },
+    { name = "mkdocs-mistune", extras = ["all"] },
+]
+lint = [
+    { name = "mkdocs-mistune", extras = ["all"] },
+    { name = "ruff" },
+]
+test = [
+    { name = "mkdocs-mistune", extras = ["all"] },
+    { name = "pytest" },
+]
 
 [[package]]
 name = "nbclient"
