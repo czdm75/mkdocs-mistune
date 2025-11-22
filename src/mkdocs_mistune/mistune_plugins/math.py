@@ -1,11 +1,10 @@
-from re import L
 from typing import TYPE_CHECKING, Literal, Match, Optional
 
 from mistune.plugins import Plugin
 
 if TYPE_CHECKING:
     from mistune.block_parser import BlockParser
-    from mistune.core import ST, BaseRenderer, BlockState, InlineState
+    from mistune.core import ST, BlockState, InlineState
     from mistune.inline_parser import InlineParser
     from mistune.markdown import Markdown
 
@@ -71,7 +70,7 @@ class MathPlugin(Plugin):
     def __init__(self, engine: MathEngine = "client"):
         if engine not in ("typst", "mathjax", "katex", "frontmatter", "client"):
             raise ValueError("invalid config math engine: " + engine)
-        self.engine = engine
+        self.engine: MathEngine = engine
 
     def __call__(self, md: "Markdown") -> None:
         md.inline.register("inline_math", INLINE_MATH_PATTERN, self.parse_inline_math, before="link")
