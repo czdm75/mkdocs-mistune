@@ -22,7 +22,7 @@ build-backend = "hatchling.build"
 packages = ["src/mkdocs_mistune"]
 
 [dependency-groups]
-dev = [ "mkdocs-mistune[all]", "jupyter>=1.1.1" ]
+dev = [ "mkdocs-mistune[all]", "jupyter>=1.1.1", "ruff", "pytest" ]
 lint = [ "mkdocs-mistune[all]", "ruff" ]
 test = [ "mkdocs-mistune[all]", "pytest" ]
 

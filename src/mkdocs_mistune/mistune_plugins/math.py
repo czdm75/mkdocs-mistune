@@ -1,3 +1,4 @@
+from re import L
 from typing import TYPE_CHECKING, Literal, Match, Optional
 
 from mistune.plugins import Plugin
@@ -49,21 +50,19 @@ def _render_math_katex(text: str) -> str:
 
 
 def render_math(mode: RenderMode, engine: MathEngine, text: str) -> str:
-    match mode:
-        case "inline":
-            left, right = '<span class="math_inline">', "</span>"
-        case "block":
-            left, right = '<div class="math_block">', "</div>"
-        case _:
-            raise ValueError("invalid token type: " + mode)
+    if mode == "inline":
+        left, right = '<span class="math_inline">', "</span>"
+    elif mode == "block":
+        left, right = '<div class="math_block">', "</div>"
+    else:
+        raise ValueError("invalid token type: " + mode)
 
-    match engine:
-        case "typst":
-            content = _render_math_typst(mode, text)
-        case "client":
-            content = text
-        case _:
-            raise NotImplementedError()
+    if engine == "typst":
+        content = _render_math_typst(mode, text)
+    elif engine == "client":
+        content = text
+    else:
+        raise NotImplementedError()
 
     return "".join([left, content, right])
 
@@ -81,22 +80,30 @@ class MathPlugin(Plugin):
         md.block.insert_rule(md.block.list_rules, "block_math", before="list")
 
         if md.renderer and md.renderer.NAME == "html":
-            for engine in ("typst", "mathjax", "katex", "math"):
-                for mode in ("inline", "block"):
-                    md.renderer.register(
-                        name=f"{mode}_math_{engine}", method=lambda renderer, text: render_math(mode, engine, text)
-                    )
+            # Register for each combination explicitly
+            md.renderer.register("inline_math_typst", lambda renderer, text: render_math("inline", "typst", text))
+            md.renderer.register("inline_math_mathjax", lambda renderer, text: render_math("inline", "mathjax", text))
+            md.renderer.register("inline_math_katex", lambda renderer, text: render_math("inline", "katex", text))
+            md.renderer.register("inline_math_client", lambda renderer, text: render_math("inline", "client", text))
+            md.renderer.register("block_math_typst", lambda renderer, text: render_math("block", "typst", text))
+            md.renderer.register("block_math_mathjax", lambda renderer, text: render_math("block", "mathjax", text))
+            md.renderer.register("block_math_katex", lambda renderer, text: render_math("block", "katex", text))
+            md.renderer.register("block_math_client", lambda renderer, text: render_math("block", "client", text))
 
     def _get_math_engine(self, frontmatter_engine: Optional[MathEngine]) -> Optional[MathEngine]:
-        if frontmatter_engine in ("typst", "mathjax", "katex", "client"):
-            return frontmatter_engine
-        elif frontmatter_engine is not None:
-            raise ValueError("invalid math_engine in frontmatter: " + frontmatter_engine)
-        elif self.engine in ("typst", "mathjax", "katex", "client"):
-            return self.engine
+        valid_engines = ("typst", "mathjax", "katex", "client")
+        if self.engine == "frontmatter":
+            if frontmatter_engine in valid_engines:
+                return frontmatter_engine
+            elif frontmatter_engine is None:
+                return
+            else:
+                raise ValueError("invalid math_engine in frontmatter: " + frontmatter_engine)
         else:
-            # plugin engine is frontmatter but frontmatter engine is None, disabled
-            return
+            if frontmatter_engine is None:
+                return self.engine
+            else:
+                raise ValueError(f"plugin math engine config as {self.engine} but frontmatter got {frontmatter_engine}")
 
     def _parse_math(self, mode: RenderMode, m: Match[str], state: "ST") -> Optional[int]:
         """
