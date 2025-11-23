@@ -29,7 +29,7 @@ lint = [ "mkdocs-mistune[all]", "ruff" ]
 test = [ "mkdocs-mistune[all]", "pytest" ]
 
 [project.entry-points."mkdocs.plugins"]
-custom-renderer = "mkdocs_custom_renderer.plugin:CustomRendererPlugin"
+mistune = "mkdocs_mistune.plugin:MistunePlugin"
 
 [tool.ruff]
 line-length = 120

@@ -85,7 +85,7 @@ def debug_render_frontmatter(renderer: BaseRenderer, content: Dict[Any, Any]) ->
     return "\n".join(['<div class="frontmatter">', json.dumps(content), "</div>"])
 
 
-def empty_render_frontmatter(renderer: BaseRenderer) -> str:
+def empty_render_frontmatter(renderer: BaseRenderer, content) -> str:
     return ""
 
 

@@ -1,38 +1,40 @@
-from typing import Dict, Tuple
-
 import mistune
 from mistune.directives import Admonition, FencedDirective
 
-__all__ = ["MISTUNE_PLUGINS", "MarkdownParser"]
+from mkdocs_mistune.mistune_plugins import Frontmatter, Graph, Math
 
-MISTUNE_PLUGINS = [
-    # inline plugins
-    "strikethrough",
-    "url",
-    "abbr",
-    "superscript",
-    "subscript",
-    # block plugins
-    "task_lists",
-    "footnotes",
-    "table",
-    FencedDirective([Admonition()]),
-]
+__all__ = ["MarkdownParser"]
+
+
+def mistune_plugins():
+    return [
+        # inline plugins
+        "strikethrough",
+        "url",
+        "abbr",
+        "superscript",
+        "subscript",
+        # block plugins
+        "task_lists",
+        "footnotes",
+        "table",
+        Math(engine="client"),
+        Frontmatter(),
+        FencedDirective([Admonition(), Graph()]),
+    ]
 
 
 class MarkdownParser:
-    def __init__(self, plugins=None, output="html"):
-        if output == "html":
-            self.renderer = mistune.HTMLRenderer(escape=False)
-        elif output == "ast":
-            self.renderer = None
+    def __init__(self, plugins=None):
+        if plugins is None:
+            self.plugins = mistune_plugins()
         else:
-            raise Exception("unknown output format")
+            self.plugins = plugins
 
-        self.plugins = MISTUNE_PLUGINS.copy() if plugins is None else plugins
-        self.markdown = mistune.create_markdown(
-            renderer=self.renderer, plugins=self.plugins
-        )
+        self.markdown = mistune.create_markdown(plugins=self.plugins)
 
-    def parse(self, markdown: str) -> str:
-        return self.markdown(markdown)
+    def parse(self, markdown: str):
+        return self.markdown.parse(markdown)
+
+    def parse_and_render(self, markdown: str) -> str:
+        return self.markdown(markdown)  # type: ignore
