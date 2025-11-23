@@ -12,7 +12,9 @@ dependencies = [
 [project.optional-dependencies]
 typst = [ "typst>=0.14" ]
 yaml = [ "PyYaml>=6.0" ]
-all = [ "typst>=0.14" , "PyYaml>=6.0" ]
+mermaid = [ "mermaid-py>=0.8" ]
+graphviz = [ "graphviz>=0.21" ]
+all = [ "typst>=0.14" , "PyYaml>=6.0", "mermaid-py>=0.8", "graphviz>=0.21" ]
 
 [build-system]
 requires = ["hatchling"]

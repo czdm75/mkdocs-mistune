@@ -1,4 +1,3 @@
-from multiprocessing import Value
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Literal, Match, Optional
 
 from mistune import BaseRenderer
@@ -20,7 +19,7 @@ YAML_FRONTMATTER_PATTERN = r"^---\s*\n(?P<yaml_frontmatter>[\s\S]*?)\n---\s*(?=\
 TOML_FRONTMATTER_PATTERN = r"^\+\+\+\s*\n(?P<toml_frontmatter>[\s\S]*?)\n\+\+\+\s*(?=\n|$)"
 JSON_FRONTMATTER_PATTERN = r"^\{\s*\n(?P<json_frontmatter>[\s\S]*?)\n\}\s*(?=\n|$)"
 
-SyntaxType = Literal["yaml", "toml", "json"]
+FrontmatterSyntax = Literal["yaml", "toml", "json"]
 
 
 def _parse_frontmatter(
@@ -90,8 +89,8 @@ def empty_render_frontmatter(renderer: BaseRenderer) -> str:
     return ""
 
 
-class FrontMatterPlugin(Plugin):
-    def __init__(self, syntax: Optional[List[SyntaxType]] = None, debug_render: bool = False):
+class Frontmatter(Plugin):
+    def __init__(self, syntax: Optional[List[FrontmatterSyntax]] = None, debug_render: bool = False):
         if syntax is None:
             self.syntax = ["yaml", "toml", "json"]
         else:

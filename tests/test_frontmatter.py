@@ -1,14 +1,11 @@
 import re
-from typing import Any, Dict
 
-import mistune
 from mistune import BlockParser, BlockState
 
 from mkdocs_mistune.mistune_plugins.frontmatter import (
     JSON_FRONTMATTER_PATTERN,
     TOML_FRONTMATTER_PATTERN,
     YAML_FRONTMATTER_PATTERN,
-    FrontMatterPlugin,
     parse_block_json_frontmatter,
     parse_block_toml_frontmatter,
     parse_block_yaml_frontmatter,

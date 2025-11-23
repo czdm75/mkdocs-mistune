@@ -66,7 +66,7 @@ def render_math(mode: RenderMode, engine: MathEngine, text: str) -> str:
     return "".join([left, content, right])
 
 
-class MathPlugin(Plugin):
+class Math(Plugin):
     def __init__(self, engine: MathEngine = "client"):
         if engine not in ("typst", "mathjax", "katex", "frontmatter", "client"):
             raise ValueError("invalid config math engine: " + engine)
@@ -89,8 +89,14 @@ class MathPlugin(Plugin):
             md.renderer.register("block_math_katex", lambda renderer, text: render_math("block", "katex", text))
             md.renderer.register("block_math_client", lambda renderer, text: render_math("block", "client", text))
 
-    def _get_math_engine(self, frontmatter_engine: Optional[MathEngine]) -> Optional[MathEngine]:
+    def _get_math_engine(self, state: "ST") -> Optional[MathEngine]:
         valid_engines = ("typst", "mathjax", "katex", "client")
+        frontmatter = state.env.get("frontmatter")
+        if isinstance(frontmatter, dict):
+            frontmatter_engine = frontmatter.get("math_engine")
+        else:
+            frontmatter_engine = None
+
         if self.engine == "frontmatter":
             if frontmatter_engine in valid_engines:
                 return frontmatter_engine
@@ -108,8 +114,7 @@ class MathPlugin(Plugin):
         """
         Convert math blocks to {block | inline}_{typst|mathjax|katex|math}
         """
-        frontmatter_engine = state.env.get("frontmatter", {}).get("math_engine")
-        engine = self._get_math_engine(frontmatter_engine)
+        engine = self._get_math_engine(state)
         if not engine:
             return
 
